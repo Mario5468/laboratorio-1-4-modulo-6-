@@ -1,0 +1,76 @@
+sudo nano /usr/local/snort/etc/snort/snort.lua
+
+HOME NET 10.0.0.76/24'
+
+snort -T-c /usr/local/snort/etc/snort/snort.lua
+
+sudo ip link set dev ens160 promisc on
+
+sudo nano /usr/local/snort/etc/snort/local.rules
+
+alert icmp any any -> any any (msg: "ICMP Traffic Detected"; sid: 10000001; metadata:policy security-ips alert; )
+
+sudo snort -c /usr/local/snort/etc/snort/snort.lua -R /usr/local/snort/etc/snort/local.rules i ens160 -A alert fast -s 65535 -k none
+
+
+
+
+
+
+
+# Detectar todo el tráfico ICMP hacia el host
+
+alert icmp any any -> any any (msg: "RECIBIENDO PING, TAMO ACTIVO"; sid: 1000001; metadata:policy security-ips alert; )
+
+# Detectar todo el tráfico hacia el puerto 21/tcp
+
+alert tcp any any -> any 21 (msg: "CONECCION EN EL PUERTO 21"; sid:1000002; metadata:policy security-ips alert; )
+
+# Detectar todo el tráfico hacia el puerto 22/tcp
+
+alert tcp any any -> any 22 (msg: "CONECCION EN EL PUERTO 22"; sid:1000003; metadata:policy security-ips alert; )
+
+# Detectar todo el tráfico hacia el puerto 80/tcp
+
+alert top any any -> any 80 (msg:"SUBIENDO PUERTO 80"; sid: 1000004; metadata:policy security-ips alert; )
+
+
+
+
+
+
+
+# Detectar todo el tráfico ICMP hacia el host
+
+alert icmp any any -> any any (msg: "ICMP Traffic Detected"; sid: 1000001; metadata:policy security-ips alert; )
+
+# Detectar todo el tráfico hacia el puerto 22/tcp
+
+alert ssh  any any -> any 22 (msg: "SSH Traffic detected on port 22"; sid:1000003; rev:1;)
+
+# Detectar todo el tráfico hacia el puerto 22/tcp
+
+alert http  any any -> $HOME_NET 80 (msg: "HTTP Traffic detected on port 80"; sid:1000004; rev:1;)
+
+# Detectar todo el tráfico hacia el puerto 80/tcp
+
+alert ftp  any any -> $HOME_NET 21 (msg:"FTP Traffic detected on port 21"; sid: 1000002; rev:; )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
